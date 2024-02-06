@@ -1,0 +1,58 @@
+Scenario 3:
+
+import org.apache.poi.ss.usermodel.* 
+import org.apache.poi.xssf.usermodel.*
+
+def readExcelData(String filePath, String sheetName) { 
+    FileInputStream file = new FileInputStream(new File(filePath)) 
+    Workbook workbook = new XSSFWorkbook(file) 
+    Sheet sheet = workbook.getSheet(sheetName) 
+
+List<Map<String, String>> data = [] 
+
+for (Row row : sheet) { 
+    Map<String, String> rowData = [:] 
+    for (Cell cell : row) { 
+        String columnName = sheet.getRow(0).getCell(cell.getColumnIndex()).getStringCellValue() 
+        String cellValue = cell.getStringCellValue() 
+
+        rowData.put(columnName, cellValue) 
+    } 
+    data.add(rowData) 
+  } 
+  workbook.close() 
+  file.close() 
+
+  return data 
+}
+
+def filePath = "path/to/excel/file.xlsx" 
+def sheetName = "Sheet1" 
+
+def excelData = readExcelData(filePath, sheetName)
+
+def triggerAPI(String url, String requestBody) { 
+    // Implement the code to trigger the API using the POST method 
+}
+
+def url = "https://dummy.restapiexample.com/api/v1/create" 
+def requestBody = """ 
+{ "name": "{name}", 
+  "salary": "{salary}", 
+  "age": "{age}" 
+} 
+""" 
+triggerAPI(url, requestBody)
+
+// Verify response status and data for positive test cases 
+assert response.status == 200 
+assert response.data.name == "(name)" 
+assert response.data.salary == "{salary}" 
+assert response.data.age == "(age)" 
+assert response.data.id == {id} 
+
+// Add assertions for negative test cases 
+assert response.status != 500 
+assert response.data.name != "" 
+assert response.data.salary != null 
+assert response.data.age != "invalid"
